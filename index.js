@@ -11,35 +11,8 @@ const { get } = require("http");
 const team = [];
 let manager;
 
-const displayMenu = () => {
-    inquirer.prompt([
-    {
-        type: "list",
-        name: "useroptions",
-        message: "Choose an option to add an Engineer, add an Intern, or build your team!",
-        choices: ["Add an Engineer", "Add an Intern", "Buid your team"]
-    }
-    ])
 
-    .then(response => {
-        switch (response.useroptions) {
-            case "Add an Engineer":
-                getEngineerInfo();
-                break;
-            case "Add an Intern":
-                getInternInfo();
-                break;
-            case "Build my team":
-                generateteam();
-                break;
-        }
-    });
-};
-
-function getManagerInfo(managerInputs) {
-    if (!managerInputs) {
-        managerInputs = [];
-    }
+function getManagerInfo() {
 
     return inquirer.prompt([
         {
@@ -90,14 +63,41 @@ function getManagerInfo(managerInputs) {
                 }
             }
         }
-    ]).then
+    ]).then(answers => {
+        const manager = new Manager(answers.managerName, answers.managerId, answers.managerEmail, answers.managerOfficeNumber)
+        team.push(manager);
+        displayMenu();
+    });
+};
+
+const displayMenu = () => {
+    inquirer.prompt([
+    {
+        type: "list",
+        name: "useroptions",
+        message: "Choose an option to add an Engineer, add an Intern, or build your team!",
+        choices: ["Add an Engineer", "Add an Intern", "Buid your team"]
+    }
+    ])
+
+    .then(response => {
+        switch (response.useroptions) {
+            case "Add an Engineer":
+                getEngineerInfo();
+                break;
+            case "Add an Intern":
+                getInternInfo();
+                break;
+            case "Build my team":
+                generateteam();
+                break;
+        }
+    });
 };
 
 
-function getEngineerInfo(engineerInputs) {
-    if (!engineerInputs) {
-        engineerInputs = [];
-    };
+function getEngineerInfo() {
+
 
     return inquirer.prompt([
         {
@@ -149,16 +149,13 @@ function getEngineerInfo(engineerInputs) {
             }
         }
     ]).then(answers => {
-        const Engineer = new Engineer(answers.EngineerName, answers.EngineerId, answers.EngineerEmail, answers.EngineerGithub)
-        team.push(Engineer);
+        const engineer = new Engineer(answers.engineerName, answers.engineerId, answers.engineerEmail, answers.engineerGithub)
+        team.push(engineer);
         displayMenu();
     });
 };
 
-function getInternInfo(internInputs) {
-    if (!internInputs) {
-        internInputs = [];
-    };
+function getInternInfo() {
 
     return inquirer.prompt([
         {
@@ -209,7 +206,11 @@ function getInternInfo(internInputs) {
                 }
             }
         }
-    ]).then(displayMenu());
+    ]).then(answers => {
+        const intern = new Intern (answers.internName, answers.internId, answers.internEmail, answers.internSchool)
+        team.push(intern);
+        displayMenu();
+    });
 
 };
 
